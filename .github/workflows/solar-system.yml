@@ -8,38 +8,38 @@ on:
       - 'feature/*'
 
 env:
-    MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
-    MONGO_USERNAME: ${{ vars.MONGO_USERNAME}}
-    MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD}}
+  MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
+  MONGO_USERNAME: ${{ vars.MONGO_USERNAME }}
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
 
 jobs:
-    unit-testing:
-        name: Unit Testing
-        strategy:
-          matrix:
-            nodejs_version: [18, 19, 20]
-            operating_system: [ubuntu-latest, macos-latest, windows-latest]
-            exclude:
-              - nodejs_version: 18
-              operating_system: macos-latest
-        runs-on: ${{matrix.operating_system}}
-        steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+  unit-testing:
+    name: Unit Testing
+    strategy:
+      matrix:
+        nodejs_version: [18, 19, 20]
+        operating_system: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          - nodejs_version: 18
+            operating_system: macos-latest
+    runs-on: ${{ matrix.operating_system }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version - ${{matrix.nodejs_version}}
-          uses: actions/setup-node@v3
-          with:
-            node-version: ${{matrix.nodejs_version}}
+      - name: Setup NodeJS Version ${{ matrix.nodejs_version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.nodejs_version }}
 
-        - name: Install Dependencies
-          run: npm install
+      - name: Install Dependencies
+        run: npm install
 
-        - name: Unit Testing 
-          run: npm test
+      - name: Run Unit Tests
+        run: npm test
 
-        - name: Unit Testing Reults
-          uses: actions/upload-artifact@v4
-          with:
-            name: Mocha_Test_Results
-            path: test-results.xml
+      - name: Upload Unit Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mocha_Test_Results
+          path: test-results.xml
